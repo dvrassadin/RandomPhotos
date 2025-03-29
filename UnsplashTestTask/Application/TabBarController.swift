@@ -23,7 +23,9 @@ final class TabBarController: UITabBarController {
             image: UIImage(systemName: "photo.stack"),
             selectedImage: UIImage(systemName: "photo.stack.fill")
         )
-        let photosVC = PhotosViewController()
+        let networkService = DefaultNetworkServices.shared
+        let photosViewModel = DefaultPhotosViewModel(networkService: networkService)
+        let photosVC = PhotosViewController(viewModel: photosViewModel)
         photosVC.tabBarItem = photosTabBarItem
         
         let favoritesTabBarItem = UITabBarItem(

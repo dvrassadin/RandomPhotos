@@ -7,6 +7,6 @@
 
 import Foundation
 
-struct APIError: Decodable {
+struct APIError: Decodable, Error {
     let errors: [String]
 }

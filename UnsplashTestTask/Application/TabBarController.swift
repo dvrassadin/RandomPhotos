@@ -34,7 +34,8 @@ final class TabBarController: UITabBarController {
             image: UIImage(systemName: "star"),
             selectedImage: UIImage(systemName: "star.fill")
         )
-        let favoritesVC = FavoritesViewController()
+        let favoritesViewModel = DefaultFavoritesViewModel()
+        let favoritesVC = FavoritesViewController(viewModel: favoritesViewModel)
         let favoritesNavigationController = UINavigationController(rootViewController: favoritesVC)
         favoritesNavigationController.tabBarItem = favoritesTabBarItem
         

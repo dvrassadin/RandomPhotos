@@ -44,6 +44,7 @@ final class PhotosView: UIView {
         super.init(frame: .zero)
         setupSubviews()
         setupConstraints()
+        backgroundColor = .systemBackground
     }
     
     required init?(coder: NSCoder) {

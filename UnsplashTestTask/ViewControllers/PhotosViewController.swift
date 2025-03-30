@@ -46,17 +46,17 @@ final class PhotosViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
-        setupSearchController()
+        setupUI()
         bindToViewModel()
     }
     
     // MARK: UI Setup
     
-    private func setupSearchController() {
-//        searchController.searchResultsUpdater = self
+    private func setupUI() {
         searchController.searchBar.delegate = self
         navigationItem.searchController = searchController
         definesPresentationContext = true
+        navigationItem.title = String(localized: "Photos")
     }
     
     // MARK: Setup View
@@ -110,6 +110,19 @@ final class PhotosViewController: UIViewController {
         
         present(alertController, animated: true)
     }
+    
+    // MARK: Show Photo Details
+    
+    private func showPhotoDetails(for photo: Photo) {
+        let networkService = DefaultNetworkServices.shared
+        let photoDetailViewModel = DefaultPhotoDetailsViewModel(networkService: networkService)
+        let photoDetailViewController = PhotoDetailsViewController(
+            viewModel: photoDetailViewModel,
+            initialPhoto: photo
+        )
+        
+        navigationController?.pushViewController(photoDetailViewController, animated: true)
+    }
 
 }
 
@@ -145,34 +158,29 @@ extension PhotosViewController: UICollectionViewDataSource {
 
 extension PhotosViewController: UICollectionViewDelegate {
     
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        let initialPhoto = viewModel.photos.value[indexPath.item]
+        showPhotoDetails(for: initialPhoto)
+    }
+    
 }
-
-// MARK: - UISearchResultsUpdating
-
-//extension PhotosViewController: UISearchResultsUpdating {
-//    
-//    func updateSearchResults(for searchController: UISearchController) {
-//        guard let searchText = searchController.searchBar.text, !searchText.isEmpty else {
-//            viewModel.getPhotos()
-//            return
-//        }
-//        
-//        viewModel.searchPhotos(query: searchText)
-//    }
-//    
-//}
 
 // MARK: - UISearchBarDelegate
 
 extension PhotosViewController: UISearchBarDelegate {
     
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-        guard let text = searchBar.searchTextField.text, !text.isEmpty else {
+        guard let text = searchBar.searchTextField.text,
+              !text.filter({ !$0.isWhitespace }).isEmpty else {
             viewModel.getPhotos()
             return
         }
         
         viewModel.searchPhotos(query: text)
+    }
+    
+    func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {
+        viewModel.getPhotos()
     }
     
 }

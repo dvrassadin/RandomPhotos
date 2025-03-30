@@ -10,6 +10,7 @@ import OSLog
 protocol NetworkService {
     func getPhotos(page: UInt, perPage: UInt) async throws -> [Photo]
     func searchPhotos(query: String, page: UInt, perPage: UInt) async throws -> SearchResponse
+    func getPhoto(id: String) async throws -> Photo
 }
 
 actor DefaultNetworkServices: NetworkService {
@@ -46,6 +47,7 @@ actor DefaultNetworkServices: NetworkService {
     private let decoder: JSONDecoder = {
         let decoder = JSONDecoder()
         decoder.keyDecodingStrategy = .convertFromSnakeCase
+        decoder.dateDecodingStrategy = .iso8601
         return decoder
     }()
     
@@ -63,6 +65,7 @@ actor DefaultNetworkServices: NetworkService {
             logger.error("Decoding error for request: \(url.absoluteString)")
             return unknownError
         }
+        logger.info("Received error \"\(errorMessage)\" for request: \(url.absoluteString)")
         return APIError(errors: [errorMessage])
     }
     
@@ -112,6 +115,30 @@ actor DefaultNetworkServices: NetworkService {
         do {
             let response = try decoder.decode(SearchResponse.self, from: data)
             logger.info("Received \(response.results.count) photos for request: \(url.absoluteString)")
+            return response
+        } catch {
+            throw decodeError(from: data, url: url)
+        }
+    }
+    
+    // MARK: Get Photo Details
+    
+    func getPhoto(id: String) async throws -> Photo {
+        let url = baseURL
+            .appendingPathComponent("photos")
+            .appendingPathComponent(id)
+            .appending(
+                queryItems: [
+                    URLQueryItem(name: "client_id", value: apiKey),
+                ]
+            )
+        
+        logger.info("Starting request: \(url.absoluteString)")
+        let (data, _) = try await session.data(from: url)
+        
+        do {
+            let response = try decoder.decode(Photo.self, from: data)
+            logger.info("Received photo for request: \(url.absoluteString)")
             return response
         } catch {
             throw decodeError(from: data, url: url)

@@ -5,7 +5,6 @@
 //  Created by Daniil Rassadin on 29/3/25.
 //
 
-import Foundation
 import Combine
 
 protocol PhotosViewModel {

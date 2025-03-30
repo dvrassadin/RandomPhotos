@@ -19,6 +19,15 @@ final class PhotosViewController: UIViewController {
     
     private var cancellables: Set<AnyCancellable> = []
     
+    // MARK: UI Components
+    
+    private let searchController: UISearchController = {
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = String(localized: "Photo Search")
+        return searchController
+    }()
+    
     // MARK: Lifecycle
     
     init(viewModel: PhotosViewModel) {
@@ -37,7 +46,17 @@ final class PhotosViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupView()
+        setupSearchController()
         bindToViewModel()
+    }
+    
+    // MARK: UI Setup
+    
+    private func setupSearchController() {
+//        searchController.searchResultsUpdater = self
+        searchController.searchBar.delegate = self
+        navigationItem.searchController = searchController
+        definesPresentationContext = true
     }
     
     // MARK: Setup View
@@ -64,7 +83,6 @@ final class PhotosViewController: UIViewController {
             .dropFirst()
             .receive(on: DispatchQueue.main)
             .sink { [weak self] photos in
-                print(photos)
                 self?.contentView.collectionView.reloadData()
             }
             .store(in: &cancellables)
@@ -81,7 +99,16 @@ final class PhotosViewController: UIViewController {
     // MARK: Show Alert
     
     private func showAlert(message: String) {
+        let alertController = UIAlertController(
+            title: String(localized: "Error"),
+            message: message,
+            preferredStyle: .alert
+        )
         
+        let okAction = UIAlertAction(title: String(localized: "OK"), style: .default)
+        alertController.addAction(okAction)
+        
+        present(alertController, animated: true)
     }
 
 }
@@ -117,5 +144,35 @@ extension PhotosViewController: UICollectionViewDataSource {
 // MARK: - UICollectionViewDelegate
 
 extension PhotosViewController: UICollectionViewDelegate {
+    
+}
+
+// MARK: - UISearchResultsUpdating
+
+//extension PhotosViewController: UISearchResultsUpdating {
+//    
+//    func updateSearchResults(for searchController: UISearchController) {
+//        guard let searchText = searchController.searchBar.text, !searchText.isEmpty else {
+//            viewModel.getPhotos()
+//            return
+//        }
+//        
+//        viewModel.searchPhotos(query: searchText)
+//    }
+//    
+//}
+
+// MARK: - UISearchBarDelegate
+
+extension PhotosViewController: UISearchBarDelegate {
+    
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        guard let text = searchBar.searchTextField.text, !text.isEmpty else {
+            viewModel.getPhotos()
+            return
+        }
+        
+        viewModel.searchPhotos(query: text)
+    }
     
 }

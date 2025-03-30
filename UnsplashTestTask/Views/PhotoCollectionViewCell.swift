@@ -48,7 +48,6 @@ final class PhotoCollectionViewCell: UICollectionViewCell {
     // MARK: Configure with Data
     
     func configure(with photo: Photo) {
-        print(photo.urls.regular)
         imageView.kf.setImage(with: photo.urls.regular, placeholder: UIImage(systemName: "photo"))
     }
     

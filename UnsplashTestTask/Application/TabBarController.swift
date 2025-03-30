@@ -26,7 +26,8 @@ final class TabBarController: UITabBarController {
         let networkService = DefaultNetworkServices.shared
         let photosViewModel = DefaultPhotosViewModel(networkService: networkService)
         let photosVC = PhotosViewController(viewModel: photosViewModel)
-        photosVC.tabBarItem = photosTabBarItem
+        let photosNavigationController = UINavigationController(rootViewController: photosVC)
+        photosNavigationController.tabBarItem = photosTabBarItem
         
         let favoritesTabBarItem = UITabBarItem(
             title: String(localized: "Favorites"),
@@ -34,9 +35,10 @@ final class TabBarController: UITabBarController {
             selectedImage: UIImage(systemName: "star.fill")
         )
         let favoritesVC = FavoritesViewController()
-        favoritesVC.tabBarItem = favoritesTabBarItem
+        let favoritesNavigationController = UINavigationController(rootViewController: favoritesVC)
+        favoritesNavigationController.tabBarItem = favoritesTabBarItem
         
-        viewControllers = [photosVC, favoritesVC]
+        viewControllers = [photosNavigationController, favoritesNavigationController]
     }
 
 }

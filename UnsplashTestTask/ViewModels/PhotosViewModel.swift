@@ -14,6 +14,7 @@ protocol PhotosViewModel {
     var errorMessage: PassthroughSubject<String, Never> { get }
     
     @MainActor func getPhotos()
+    @MainActor func searchPhotos(query: String)
 }
 
 final class DefaultPhotosViewModel: PhotosViewModel {
@@ -22,8 +23,9 @@ final class DefaultPhotosViewModel: PhotosViewModel {
     
     private let networkService: NetworkService
     
-    
     // MARK: Properties
+    
+    private let itemsPerPage: UInt = 20 // For pagination
     
     let photos = CurrentValueSubject<[Photo], Never>([])
     let isLoading = PassthroughSubject<Bool, Never>()
@@ -41,12 +43,43 @@ final class DefaultPhotosViewModel: PhotosViewModel {
         isLoading.send(true)
         Task {
             do {
-                let fetchedPhotos = try await networkService.getPhotos(page: 1, perPage: 20)
+                let fetchedPhotos = try await networkService.getPhotos(
+                    page: 1,
+                    perPage: itemsPerPage
+                )
                 isLoading.send(false)
                 photos.send(fetchedPhotos)
             } catch {
                 isLoading.send(false)
-                errorMessage.send(error.localizedDescription)
+                if let error = (error as? APIError)?.errors.first {
+                    errorMessage.send(error)
+                } else {
+                    errorMessage.send(error.localizedDescription)
+                }
+            }
+        }
+    }
+    
+    // MARK: Search Photos
+    
+    func searchPhotos(query: String) {
+        Task {
+            isLoading.send(true)
+            do {
+                let response = try await networkService.searchPhotos(
+                    query: query,
+                    page: 1,
+                    perPage: itemsPerPage
+                )
+                isLoading.send(false)
+                photos.send(response.results)
+            } catch {
+                isLoading.send(false)
+                if let error = (error as? APIError)?.errors.first {
+                    errorMessage.send(error)
+                } else {
+                    errorMessage.send(error.localizedDescription)
+                }
             }
         }
     }

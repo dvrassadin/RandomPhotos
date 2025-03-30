@@ -8,7 +8,7 @@
 import Foundation
 
 protocol NetworkService {
-    func getPhotos() async throws -> [Photo]
+    func getPhotos(page: UInt, perPage: UInt) async throws -> [Photo]
 }
 
 actor DefaultNetworkServices: NetworkService {
@@ -61,13 +61,14 @@ actor DefaultNetworkServices: NetworkService {
     
     // MARK: Get Photos
     
-    func getPhotos() async throws -> [Photo] {
+    func getPhotos(page: UInt, perPage: UInt) async throws -> [Photo] {
         let url = baseURL
             .appendingPathComponent("photos")
             .appending(
                 queryItems: [
                     URLQueryItem(name: "client_id", value: apiKey),
-                    URLQueryItem(name: "per_page", value: "15")
+                    URLQueryItem(name: "page", value: String(page)),
+                    URLQueryItem(name: "per_page", value: String(perPage))
                 ]
             )
         

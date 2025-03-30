@@ -6,8 +6,15 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		0DA03E454A3D0A32720B20F6 /* Pods_UnsplashTestTask.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2DF1741D02FCF713F2139B16 /* Pods_UnsplashTestTask.framework */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		2DF1741D02FCF713F2139B16 /* Pods_UnsplashTestTask.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_UnsplashTestTask.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		51BD22E62D97140500A531A8 /* UnsplashTestTask.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UnsplashTestTask.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		97AFBC31792C65D1621D27EC /* Pods-UnsplashTestTask.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnsplashTestTask.debug.xcconfig"; path = "Target Support Files/Pods-UnsplashTestTask/Pods-UnsplashTestTask.debug.xcconfig"; sourceTree = "<group>"; };
+		F3CE5AB85F21DAF984423CE3 /* Pods-UnsplashTestTask.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-UnsplashTestTask.release.xcconfig"; path = "Target Support Files/Pods-UnsplashTestTask/Pods-UnsplashTestTask.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -36,17 +43,29 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0DA03E454A3D0A32720B20F6 /* Pods_UnsplashTestTask.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		115E3F57CFE52E2E08798D7B /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				97AFBC31792C65D1621D27EC /* Pods-UnsplashTestTask.debug.xcconfig */,
+				F3CE5AB85F21DAF984423CE3 /* Pods-UnsplashTestTask.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 		51BD22DD2D97140500A531A8 = {
 			isa = PBXGroup;
 			children = (
 				51BD22E82D97140500A531A8 /* UnsplashTestTask */,
 				51BD22E72D97140500A531A8 /* Products */,
+				115E3F57CFE52E2E08798D7B /* Pods */,
+				BA3D4502C64793786BA125DE /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -58,6 +77,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		BA3D4502C64793786BA125DE /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2DF1741D02FCF713F2139B16 /* Pods_UnsplashTestTask.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -65,9 +92,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 51BD22F92D97140600A531A8 /* Build configuration list for PBXNativeTarget "UnsplashTestTask" */;
 			buildPhases = (
+				6D95991C17AE58047855421D /* [CP] Check Pods Manifest.lock */,
 				51BD22E22D97140500A531A8 /* Sources */,
 				51BD22E32D97140500A531A8 /* Frameworks */,
 				51BD22E42D97140500A531A8 /* Resources */,
+				B2D703666D5E79728FFCEC77 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -77,8 +106,6 @@
 				51BD22E82D97140500A531A8 /* UnsplashTestTask */,
 			);
 			name = UnsplashTestTask;
-			packageProductDependencies = (
-			);
 			productName = UnsplashTestTask;
 			productReference = 51BD22E62D97140500A531A8 /* UnsplashTestTask.app */;
 			productType = "com.apple.product-type.application";
@@ -127,6 +154,48 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		6D95991C17AE58047855421D /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-UnsplashTestTask-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		B2D703666D5E79728FFCEC77 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnsplashTestTask/Pods-UnsplashTestTask-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-UnsplashTestTask/Pods-UnsplashTestTask-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-UnsplashTestTask/Pods-UnsplashTestTask-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		51BD22E22D97140500A531A8 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -140,6 +209,7 @@
 /* Begin XCBuildConfiguration section */
 		51BD22FA2D97140600A531A8 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 97AFBC31792C65D1621D27EC /* Pods-UnsplashTestTask.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -169,6 +239,7 @@
 		};
 		51BD22FB2D97140600A531A8 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = F3CE5AB85F21DAF984423CE3 /* Pods-UnsplashTestTask.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
@@ -233,7 +304,7 @@
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -296,7 +367,7 @@
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
-				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu17;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;

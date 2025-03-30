@@ -36,7 +36,15 @@ final class PhotosViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupView()
         bindToViewModel()
+    }
+    
+    // MARK: Setup View
+    
+    private func setupView() {
+        contentView.collectionView.dataSource = self
+        contentView.collectionView.delegate = self
     }
     
     // MARK: Bind to ViewModel
@@ -53,8 +61,11 @@ final class PhotosViewController: UIViewController {
             .store(in: &cancellables)
         
         viewModel.photos
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
             .sink { [weak self] photos in
                 print(photos)
+                self?.contentView.collectionView.reloadData()
             }
             .store(in: &cancellables)
         
@@ -73,4 +84,38 @@ final class PhotosViewController: UIViewController {
         
     }
 
+}
+
+// MARK: - UICollectionViewDataSource
+
+extension PhotosViewController: UICollectionViewDataSource {
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        numberOfItemsInSection section: Int
+    ) -> Int {
+        viewModel.photos.value.count
+    }
+    
+    func collectionView(
+        _ collectionView: UICollectionView,
+        cellForItemAt indexPath: IndexPath
+    ) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(
+            withReuseIdentifier: PhotoCollectionViewCell.identifier,
+            for: indexPath
+        ) as! PhotoCollectionViewCell
+        
+        let photo = viewModel.photos.value[indexPath.item]
+        cell.configure(with: photo)
+        
+        return cell
+    }
+    
+}
+
+// MARK: - UICollectionViewDelegate
+
+extension PhotosViewController: UICollectionViewDelegate {
+    
 }

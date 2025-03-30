@@ -41,7 +41,7 @@ final class DefaultPhotosViewModel: PhotosViewModel {
         isLoading.send(true)
         Task {
             do {
-                let fetchedPhotos = try await networkService.getPhotos()
+                let fetchedPhotos = try await networkService.getPhotos(page: 1, perPage: 20)
                 isLoading.send(false)
                 photos.send(fetchedPhotos)
             } catch {

@@ -9,6 +9,10 @@ import UIKit
 import Kingfisher
 
 final class PhotoDetailsView: UIView {
+    
+    // MARK: Properties
+    
+    private lazy var locationHeight = locationImageView.heightAnchor.constraint(equalToConstant: 20)
 
     // MARK: UI Components
     
@@ -19,9 +23,6 @@ final class PhotoDetailsView: UIView {
     private let imageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-//        imageView.backgroundColor = .yellow
-//        imageView.setContentCompressionResistancePriority(.defaultHigh, for: .vertical)
-//        imageView.setContentHuggingPriority(.defaultHigh, for: .vertical)
         return imageView
     }()
     
@@ -52,6 +53,25 @@ final class PhotoDetailsView: UIView {
         return label
     }()
     
+    private let downloadsImageView: UIImageView = {
+        let imageView = UIImageView(image: UIImage(systemName: "arrow.down.circle.fill"))
+        imageView.isHidden = true
+        return imageView
+    }()
+    
+    private let downloadsLabel: UILabel = {
+        let label = UILabel()
+        label.font = .preferredFont(forTextStyle: .caption1)
+        label.isHidden = true
+        return label
+    }()
+    
+    let favoriteButton: UIButton = {
+        let button = UIButton(configuration: .borderedProminent())
+        button.isHidden = true
+        return button
+    }()
+    
     // MARK: Initialization
     
     init() {
@@ -76,6 +96,9 @@ final class PhotoDetailsView: UIView {
         contentView.addSubview(dateLabel)
         contentView.addSubview(locationImageView)
         contentView.addSubview(locationLabel)
+        contentView.addSubview(downloadsImageView)
+        contentView.addSubview(downloadsLabel)
+        contentView.addSubview(favoriteButton)
     }
     
     private func setupConstraints() {
@@ -87,6 +110,9 @@ final class PhotoDetailsView: UIView {
         dateLabel.translatesAutoresizingMaskIntoConstraints = false
         locationImageView.translatesAutoresizingMaskIntoConstraints = false
         locationLabel.translatesAutoresizingMaskIntoConstraints = false
+        downloadsImageView.translatesAutoresizingMaskIntoConstraints = false
+        downloadsLabel.translatesAutoresizingMaskIntoConstraints = false
+        favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             scrollView.topAnchor.constraint(equalTo: safeAreaLayoutGuide.topAnchor),
@@ -103,6 +129,7 @@ final class PhotoDetailsView: UIView {
             imageView.topAnchor.constraint(equalTo: contentView.topAnchor),
             imageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
             imageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            // TODO: Make automatic ImageView height resizing
             imageView.heightAnchor.constraint(equalToConstant: 500),
             
             nameLabel.topAnchor.constraint(equalTo: imageView.bottomAnchor, constant: 16),
@@ -120,23 +147,35 @@ final class PhotoDetailsView: UIView {
             
             locationImageView.topAnchor.constraint(equalTo: dateImageView.bottomAnchor, constant: 8),
             locationImageView.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
-            locationImageView.heightAnchor.constraint(equalToConstant: 20),
-            locationImageView.widthAnchor.constraint(equalTo: dateImageView.heightAnchor),
+            locationHeight,
+            locationImageView.widthAnchor.constraint(equalTo: locationImageView.heightAnchor),
             
             locationLabel.leadingAnchor.constraint(equalTo: locationImageView.trailingAnchor, constant: 8),
             locationLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
             locationLabel.centerYAnchor.constraint(equalTo: locationImageView.centerYAnchor),
             
-            locationLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
+            downloadsImageView.topAnchor.constraint(equalTo: locationImageView.bottomAnchor, constant: 8),
+            downloadsImageView.leadingAnchor.constraint(equalTo: nameLabel.leadingAnchor),
+            downloadsImageView.heightAnchor.constraint(equalToConstant: 20),
+            downloadsImageView.widthAnchor.constraint(equalTo: downloadsImageView.heightAnchor),
+            
+            downloadsLabel.leadingAnchor.constraint(equalTo: downloadsImageView.trailingAnchor, constant: 8),
+            downloadsLabel.trailingAnchor.constraint(equalTo: nameLabel.trailingAnchor),
+            downloadsLabel.centerYAnchor.constraint(equalTo: downloadsImageView.centerYAnchor),
+            
+            favoriteButton.topAnchor.constraint(equalTo: downloadsLabel.bottomAnchor, constant: 16),
+            favoriteButton.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 32),
+            favoriteButton.trailingAnchor.constraint(equalTo: trailingAnchor, constant: -32),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 48),
+            
+            favoriteButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16)
         ])
     }
     
     // MARK: Configure with Data
     
     func setInitialPhoto(_ photo: Photo) {
-        imageView.kf.setImage(with: photo.urls.regular, placeholder: UIImage(systemName: "photo")) { [weak self] _ in
-            self?.imageView.sizeToFit()
-        }
+        imageView.kf.setImage(with: photo.urls.regular, placeholder: UIImage(systemName: "photo"))
         nameLabel.text = photo.user.name
         dateLabel.text = photo.createdAt.formatted(date: .long, time: .omitted)
     }
@@ -157,7 +196,15 @@ final class PhotoDetailsView: UIView {
                 locationLabel.text = locationString
                 locationImageView.isHidden = false
                 locationLabel.isHidden = false
+            } else {
+                locationHeight.constant = 0
             }
+        }
+        
+        if let downloads = photo.downloads {
+            downloadsLabel.text = String(localized: "\(downloads) downloads")
+            downloadsImageView.isHidden = false
+            downloadsLabel.isHidden = false
         }
     }
     

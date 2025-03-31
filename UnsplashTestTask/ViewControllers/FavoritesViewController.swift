@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import Combine
 
 final class FavoritesViewController: UIViewController {
     
@@ -13,6 +14,10 @@ final class FavoritesViewController: UIViewController {
     
     private let viewModel: FavoritesViewModel
     private lazy var contentView = FavoritesView()
+    
+    // MARK: Properties
+    
+    private var cancellables: Set<AnyCancellable> = []
     
     // MARK: Lifecycle
     
@@ -31,8 +36,21 @@ final class FavoritesViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+        bindToViewModel()
+    }
+    
+    // MARK: Bind to ViewModel
+    
+    private func bindToViewModel() {
+        viewModel.photos
+            .dropFirst()
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                
+            }
+            .store(in: &cancellables)
+        
+        try? viewModel.getPhotos()
     }
 
 }

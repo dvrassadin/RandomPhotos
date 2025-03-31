@@ -115,10 +115,13 @@ final class PhotosViewController: UIViewController {
     
     private func showPhotoDetails(for photo: Photo) {
         let networkService = DefaultNetworkServices.shared
-        let photoDetailViewModel = DefaultPhotoDetailsViewModel(networkService: networkService)
+        let photoDetailViewModel = DefaultPhotoDetailsViewModel(
+            networkService: networkService,
+            modelContext: ModelContextProvider.shared.context
+        )
         let photoDetailViewController = PhotoDetailsViewController(
             viewModel: photoDetailViewModel,
-            initialPhoto: photo
+            photo: photo
         )
         
         navigationController?.pushViewController(photoDetailViewController, animated: true)

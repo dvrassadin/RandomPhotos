@@ -26,5 +26,19 @@ struct Photo: Decodable {
     struct Location: Decodable {
         let city: String?
         let country: String?
+        
+        init(from swiftDataPhoto: SwiftDataLocation?) {
+            self.city = swiftDataPhoto?.city
+            self.country = swiftDataPhoto?.country
+        }
+    }
+    
+    init(from swiftDataPhoto: SwiftDataPhoto) {
+        self.id = swiftDataPhoto.unsplashID
+        self.createdAt = swiftDataPhoto.createdAt
+        self.downloads = swiftDataPhoto.downloads
+        self.location = Location(from: swiftDataPhoto.location)
+        self.urls = PhotoURLs(regular: swiftDataPhoto.urls.regular)
+        self.user = User(name: swiftDataPhoto.user.name)
     }
 }

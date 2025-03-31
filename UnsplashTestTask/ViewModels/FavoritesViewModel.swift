@@ -25,11 +25,23 @@ final class DefaultFavoritesViewModel: FavoritesViewModel {
     
     init(modelContext: ModelContext) {
         self.modelContext = modelContext
+        subscribe()
     }
     
     // MARK: Properties
     
+    private var cancellables = Set<AnyCancellable>()
     let photos = CurrentValueSubject<[Photo], Never>([])
+    
+    // MARK: Subscriptions
+    
+    private func subscribe() {
+        NotificationCenter.default.publisher(for: .photosDidChange)
+            .sink { [weak self] _ in
+                try? self?.getPhotos()
+            }
+            .store(in: &cancellables)
+    }
     
     // MARK: Get Photos
     

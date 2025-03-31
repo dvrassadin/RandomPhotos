@@ -58,6 +58,7 @@ final class DefaultPhotoDetailsViewModel: PhotoDetailsViewModel {
         let swiftDataPhoto = SwiftDataPhoto(from: photo)
         ModelContextProvider.shared.context.insert(swiftDataPhoto)
         try modelContext.save()
+        NotificationCenter.default.post(name: .photosDidChange, object: nil)
     }
     
     func removeFromFavorites(id: String) throws {
@@ -65,6 +66,7 @@ final class DefaultPhotoDetailsViewModel: PhotoDetailsViewModel {
         let descriptor = FetchDescriptor(predicate: predicate)
         let photos = try modelContext.fetch(descriptor)
         photos.forEach { modelContext.delete($0) }
+        NotificationCenter.default.post(name: .photosDidChange, object: nil)
     }
     
 }

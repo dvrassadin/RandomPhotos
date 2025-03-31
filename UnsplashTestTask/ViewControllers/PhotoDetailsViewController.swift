@@ -21,13 +21,19 @@ final class PhotoDetailsViewController: UIViewController {
     private var photo: Photo
     private lazy var isPhotoFavorite: Bool = {
         viewModel.isPhotoFavoritePhoto(id: photo.id)
-    }()
+    }() {
+        didSet {
+            updateFavoriteButtonTitle()
+        }
+    }
+    private let shouldFetchPhoto: Bool
     
     // MARK: Lifecycle
     
-    init(viewModel: PhotoDetailsViewModel, photo: Photo) {
+    init(viewModel: PhotoDetailsViewModel, photo: Photo, shouldFetchPhoto: Bool) {
         self.viewModel = viewModel
         self.photo = photo
+        self.shouldFetchPhoto = shouldFetchPhoto
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -43,6 +49,7 @@ final class PhotoDetailsViewController: UIViewController {
         super.viewDidLoad()
         contentView.setInitialPhoto(photo)
         bindToViewModel()
+        subscribeToNotificationCenter()
         setupFavoriteButton()
     }
     
@@ -59,7 +66,21 @@ final class PhotoDetailsViewController: UIViewController {
             }
             .store(in: &cancellables)
         
-        viewModel.getPhoto(id: photo.id)
+        if shouldFetchPhoto {
+            viewModel.getPhoto(id: photo.id)
+        }
+    }
+    
+    // MARK: Subscribe to NotificationCenter
+    
+    private func subscribeToNotificationCenter() {
+        NotificationCenter.default.publisher(for: .photosDidChange)
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] _ in
+                guard let self else { return }
+                isPhotoFavorite = viewModel.isPhotoFavoritePhoto(id: photo.id)
+            }
+            .store(in: &cancellables)
     }
     
     // MARK: Setup Favorite Button
@@ -79,8 +100,6 @@ final class PhotoDetailsViewController: UIViewController {
                 } else {
                     try viewModel.removeFromFavorites(id: photo.id)
                 }
-            
-                updateFavoriteButtonTitle()
             } catch {
                 isPhotoFavorite.toggle()
             }

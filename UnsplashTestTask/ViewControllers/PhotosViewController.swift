@@ -121,7 +121,8 @@ final class PhotosViewController: UIViewController {
         )
         let photoDetailViewController = PhotoDetailsViewController(
             viewModel: photoDetailViewModel,
-            photo: photo
+            photo: photo,
+            shouldFetchPhoto: true
         )
         
         navigationController?.pushViewController(photoDetailViewController, animated: true)

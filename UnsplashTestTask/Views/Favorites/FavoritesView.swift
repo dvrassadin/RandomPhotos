@@ -13,6 +13,10 @@ final class FavoritesView: UIView {
     
     let tableView: UITableView = {
         let tableView = UITableView()
+        tableView.register(
+            FavoritesTableViewCell.self,
+            forCellReuseIdentifier: FavoritesTableViewCell.identifier
+        )
         return tableView
     }()
     
